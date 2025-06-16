@@ -30,9 +30,6 @@ class ProcessVideoDownload implements ShouldQueue
 
     public function handle()
     {
-        Log::info('Procesando descarga: ', ['download_id' => $this->download->id, 'url' => $this->download->url]);
-        Log::info($this->download->created_by);
-
         $userId = $this->download->created_by;
         if (!$userId) {
             Log::error('User ID no definido para la descarga', ['download_id' => $this->download->id]);
@@ -50,7 +47,6 @@ class ProcessVideoDownload implements ShouldQueue
         ]);
 
         $userFolder = "user_{$userId}";
-        Log::info('Intentando crear carpeta', ['folder' => $userFolder]);
 
         try {
             Storage::disk('videos')->makeDirectory($userFolder);
@@ -75,7 +71,7 @@ class ProcessVideoDownload implements ShouldQueue
         $sanitizedName = Str::slug($originalName);
         $uniqueId = Str::uuid()->toString();
         $fileName = "video_{$videoCount}_{$uniqueId}.mp4";
-        $filePath = "videos/{$userFolder}/{$fileName}"; // Add 'videos/' prefix
+        $filePath = "videos/{$userFolder}/{$fileName}";
         $fullPath = Storage::disk('videos')->path($filePath);
 
         Log::info('Preparando descarga', ['file_path' => $filePath, 'full_path' => $fullPath, 'file_name' => $fileName]);
@@ -84,7 +80,7 @@ class ProcessVideoDownload implements ShouldQueue
             $process = new Process([
                 'yt-dlp',
                 '-o',
-                Storage::disk('videos')->path("{$userFolder}/{$fileName}"), // Store in correct folder
+                Storage::disk('videos')->path("{$userFolder}/{$fileName}"),
                 $this->download->url,
             ]);
 
