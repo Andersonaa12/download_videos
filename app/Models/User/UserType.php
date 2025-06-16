@@ -11,6 +11,6 @@ class UserType extends Model
   	protected $primaryKey = 'id';
 
     public const ID_ADMIN = 1;
-    public const ID_USER = 2;
+    public const ID_CLIENT = 2;
 
 }

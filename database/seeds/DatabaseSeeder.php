@@ -12,13 +12,24 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         User::create([
-            'type_id' => 1,
-            'name' => 'Usuario Admin',
-            'email' => 'admin@stockago.com',
-            'email_verified_at' => now(),
-            'password' => Hash::make('123'),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+                'type_id' => 1,
+                'name' => 'Usuario Admin',
+                'email' => 'admin@stockago.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('123'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+        User::create([
+                'type_id' => 2,
+                'name' => 'Usuario Client',
+                'email' => 'client@stockago.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('123'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
     }
 }

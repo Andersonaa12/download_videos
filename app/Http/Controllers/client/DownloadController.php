@@ -25,6 +25,7 @@ class DownloadController extends Controller
     public function index()
     {
         $downloads = Download::with('Status')
+                            ->where('created_by', Auth::id())
                             ->orderBy('id', 'desc')
                             ->get();
 
@@ -69,6 +70,7 @@ class DownloadController extends Controller
     public function show($id)
     {
         $download = Download::with(['Status', 'createdBy'])
+                            ->where('created_by', Auth::id())
                             ->findOrFail($id);
 
         return view('client.downloads.show', compact('download'));
@@ -76,7 +78,7 @@ class DownloadController extends Controller
 
     public function download($id)
     {
-        $download = Download::findOrFail($id);
+        $download = Download::where('created_by', Auth::id())->findOrFail($id);
 
         $filePath = str_starts_with($download->file_path, 'videos/') 
             ? substr($download->file_path, 7) 
@@ -97,6 +99,7 @@ class DownloadController extends Controller
     public function status(): JsonResponse
     {
         $downloads = Download::with(['Status', 'createdBy'])
+                            ->where('created_by', Auth::id())
                             ->select('id', 'url', 'status_id', 'file_name', 'error_message', 'created_by', 'created_at')
                             ->latest('id')
                             ->limit(50)

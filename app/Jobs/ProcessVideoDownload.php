@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Illuminate\Support\Str;
 
 use App\Models\Download\Download;
 use App\Models\Download\DownloadStatus;
@@ -29,21 +30,61 @@ class ProcessVideoDownload implements ShouldQueue
 
     public function handle()
     {
-        Log::info('Procesando descarga: ' . $this->download->id);
+        Log::info('Procesando descarga: ', ['download_id' => $this->download->id, 'url' => $this->download->url]);
+        Log::info($this->download->created_by);
+
+        $userId = $this->download->created_by;
+        if (!$userId) {
+            Log::error('User ID no definido para la descarga', ['download_id' => $this->download->id]);
+            $this->download->update([
+                'status_id' => DownloadStatus::ID_FALLIDO,
+                'error_message' => 'User ID no definido',
+                'updated_by' => $this->download->created_by ?? 0,
+            ]);
+            return;
+        }
 
         $this->download->update([
             'status_id' => DownloadStatus::ID_PROCESANDO,
-            'updated_by' => $this->download->created_by,
+            'updated_by' => $userId,
         ]);
 
-        $fileName = 'video_' . $this->download->id . '_' . time() . '.mp4';
-        $filePath = 'videos/' . $fileName;
+        $userFolder = "user_{$userId}";
+        Log::info('Intentando crear carpeta', ['folder' => $userFolder]);
+
+        try {
+            Storage::disk('videos')->makeDirectory($userFolder);
+            if (!Storage::disk('videos')->exists($userFolder)) {
+                throw new \Exception('No se pudo crear la carpeta: ' . $userFolder);
+            }
+            Log::info('Carpeta creada o ya existe', ['folder' => $userFolder]);
+        } catch (\Exception $e) {
+            Log::error('Error al crear carpeta', ['folder' => $userFolder, 'error' => $e->getMessage()]);
+            $this->download->update([
+                'status_id' => DownloadStatus::ID_FALLIDO,
+                'error_message' => 'No se pudo crear la carpeta: ' . $e->getMessage(),
+                'updated_by' => $userId,
+            ]);
+            return;
+        }
+
+        $existingVideos = Storage::disk('videos')->files($userFolder);
+        $videoCount = count($existingVideos) + 1;
+
+        $originalName = $this->download->original_name ?? 'video';
+        $sanitizedName = Str::slug($originalName);
+        $uniqueId = Str::uuid()->toString();
+        $fileName = "video_{$videoCount}_{$uniqueId}.mp4";
+        $filePath = "videos/{$userFolder}/{$fileName}"; // Add 'videos/' prefix
+        $fullPath = Storage::disk('videos')->path($filePath);
+
+        Log::info('Preparando descarga', ['file_path' => $filePath, 'full_path' => $fullPath, 'file_name' => $fileName]);
 
         try {
             $process = new Process([
                 'yt-dlp',
                 '-o',
-                storage_path('app/' . $filePath),
+                Storage::disk('videos')->path("{$userFolder}/{$fileName}"), // Store in correct folder
                 $this->download->url,
             ]);
 
@@ -54,21 +95,25 @@ class ProcessVideoDownload implements ShouldQueue
                 throw new ProcessFailedException($process);
             }
 
+            if (!Storage::disk('videos')->exists("{$userFolder}/{$fileName}")) {
+                throw new \Exception('El archivo no se creó en la ruta esperada: ' . $filePath);
+            }
+
             $this->download->update([
                 'status_id' => DownloadStatus::ID_COMPLETADO,
                 'file_path' => $filePath,
+                'full_path' => $fullPath,
                 'file_name' => $fileName,
-                'updated_by' => $this->download->created_by,
+                'updated_by' => $userId,
             ]);
 
-            Log::info('Descarga completada: ' . $this->download->id);
-
+            Log::info('Descarga completada', ['download_id' => $this->download->id, 'file_path' => $filePath, 'full_path' => $fullPath]);
         } catch (\Exception $e) {
-            Log::error('Error al descargar video: ' . $e->getMessage());
+            Log::error('Error al descargar video', ['download_id' => $this->download->id, 'error' => $e->getMessage()]);
             $this->download->update([
                 'status_id' => DownloadStatus::ID_FALLIDO,
                 'error_message' => $e->getMessage(),
-                'updated_by' => $this->download->created_by,
+                'updated_by' => $userId,
             ]);
         }
     }

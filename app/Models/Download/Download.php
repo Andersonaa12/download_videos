@@ -9,7 +9,6 @@ use App\Models\Download\DownloadStatus;
 class Download extends Model
 {
     protected $fillable = [
-        'name',
         'url',
         'status_id',
         'file_path',

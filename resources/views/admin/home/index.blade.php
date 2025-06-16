@@ -1,29 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    @if (session('success'))
-        <div class="alert alert-success" role="alert">
-            {{ session('success') }}
-            @if (session('image_url'))
-                <div class="mt-2">
-                    <label class="form-label">{{ __('URL de la imagen') }}:</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" value="{{ session('image_url') }}" id="imageUrl" readonly>
-                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('{{ session('image_url') }}')">{{ __('Copiar') }}</button>
-                    </div>
-                </div>
-            @endif
-        </div>
-    @endif
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div>{{ __('Inicio') }}</div>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadImageModal">
+                    {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadImageModal">
                         {{ __('Subir Nueva Imagen') }}
-                    </button>
+                    </button> --}}
                 </div>
                 <div class="card-body">
                     {{--
@@ -75,7 +60,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <script>
 

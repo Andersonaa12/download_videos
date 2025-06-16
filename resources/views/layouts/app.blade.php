@@ -32,20 +32,16 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-                    <ul class="navbar-nav me-auto">
-                        @auth
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('home.index') }}">{{ __('Inicio') }}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.users.index') }}">{{ __('Usuarios') }}</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.downloads.index') }}">{{ __('Descargas') }}</a>
-                            </li>
-                        @endauth
-                    </ul>
+                    @auth
+                        <ul class="navbar-nav me-auto">
+                            @if (Auth::user()->Type()->first()->id === \App\Models\User\UserType::ID_ADMIN)
+                                @include('layouts.navbar.admin')
+                            @else
+                                @include('layouts.navbar.client')
+                            @endif
+                        </ul>
+                    @endauth
+                    
 
 
                     <ul class="navbar-nav ms-auto">
@@ -78,7 +74,10 @@
         </nav>
 
         <main class="py-4">
-            @yield('content')
+            <div class="container">
+                @include('layouts.notifications')
+                @yield('content')
+            </div>
             @stack('scripts')
         </main>
     </div>

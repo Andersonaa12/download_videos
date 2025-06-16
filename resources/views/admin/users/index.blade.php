@@ -1,17 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-
-    @foreach (['success', 'error'] as $msg)
-        @if (session($msg))
-            <div class="alert alert-{{ $msg === 'success' ? 'success' : 'danger' }} alert-dismissible fade show" role="alert">
-                {{ session($msg) }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-    @endforeach
-
     <div class="row mb-3">
         <div class="col d-flex justify-content-between align-items-center">
             <h3 class="mb-0">{{ __('Usuarios') }}</h3>
@@ -72,5 +61,4 @@
             @endif
         </div>
     </div>
-</div>
 @endsection

@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-sm">
@@ -19,13 +18,12 @@
                         <p><strong>{{ __('Creado el') }}:</strong> {{ $download->created_at->toDateTimeString() }}</p>
                         <p><strong>{{ __('Nombre del archivo') }}:</strong> {{ $download->file_name ?? '-' }}</p>
                         @if ($download->status_id == \App\Models\Download\DownloadStatus::ID_COMPLETADO)
-                            <a href="{{ route('admin.downloads.download', $download->id) }}" class="btn btn-primary" download>{{ __('Descargar') }}</a>
+                            <a href="{{ route('client.downloads.download', $download->id) }}" class="btn btn-primary" download>{{ __('Descargar') }}</a>
                         @endif
                     </div>
-                    <a href="{{ route('admin.downloads.index') }}" class="btn btn-secondary mt-3">{{ __('Volver') }}</a>
+                    <a href="{{ route('client.downloads.index') }}" class="btn btn-secondary mt-3">{{ __('Volver') }}</a>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

@@ -5,7 +5,7 @@
     <div class="col d-flex justify-content-between align-items-center">
         <h3 class="mb-0">{{ __('Descargar Videos') }}</h3>
 
-        <form id="download-form" action="{{ route('admin.downloads.do_create') }}" method="POST" class="d-flex align-items-center gap-2" novalidate>
+        <form id="download-form" action="{{ route('client.downloads.do_create') }}" method="POST" class="d-flex align-items-center gap-2" novalidate>
             @csrf
             <input type="url" name="url" class="form-control" placeholder="Ingresar URL" required>
             <button type="submit" class="btn btn-success">
@@ -49,8 +49,8 @@
                             <td class="created-at">{{ $download->created_at->toDateTimeString() }}</td>
                             <td class="action">
                                 @if ($download->status_id == \App\Models\Download\DownloadStatus::ID_COMPLETADO)
-                                    <a href="{{ route('admin.downloads.show', $download->id) }}" class="btn btn-primary btn-sm me-1">{{ __('Ver') }}</a>
-                                    <a href="{{ route('admin.downloads.download', $download->id) }}" class="btn btn-success btn-sm">{{ __('Descargar') }}</a>
+                                    <a href="{{ route('client.downloads.show', $download->id) }}" class="btn btn-primary btn-sm me-1">{{ __('Ver') }}</a>
+                                    <a href="{{ route('client.downloads.download', $download->id) }}" class="btn btn-success btn-sm">{{ __('Descargar') }}</a>
                                 @elseif ($download->status_id == \App\Models\Download\DownloadStatus::ID_FALLIDO)
                                     <span class="text-danger">{{ $download->error_message }}</span>
                                 @else
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function poll() {
         try {
-            const res = await fetch('{{ route('admin.downloads.status') }}', {
+            const res = await fetch('{{ route('client.downloads.status') }}', {
                 headers: { 'Accept': 'application/json' }
             });
 
@@ -190,8 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (download.status_id == {{ \App\Models\Download\DownloadStatus::ID_COMPLETADO }}) {
                     row.querySelector('.action').innerHTML =
-                        `<a href="${window.laravelRoutes['admin.downloads.show'].replace(':id', download.id)}" class="btn btn-primary btn-sm me-1">Ver</a>` +
-                        `<a href="${window.laravelRoutes['admin.downloads.download'].replace(':id', download.id)}" class="btn btn-success btn-sm">Descargar</a>`;
+                        `<a href="${window.laravelRoutes['client.downloads.show'].replace(':id', download.id)}" class="btn btn-primary btn-sm me-1">Ver</a>` +
+                        `<a href="${window.laravelRoutes['client.downloads.download'].replace(':id', download.id)}" class="btn btn-success btn-sm">Descargar</a>`;
                 } else if (download.status_id == {{ \App\Models\Download\DownloadStatus::ID_FALLIDO }}) {
                     row.querySelector('.action').innerHTML =
                         `<span class="text-danger">${download.error_message}</span>`;
@@ -208,8 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Define named routes for JavaScript usage
     window.laravelRoutes = {
-        'admin.downloads.show': '{{ route('admin.downloads.show', ':id') }}',
-        'admin.downloads.download': '{{ route('admin.downloads.download', ':id') }}'
+        'client.downloads.show': '{{ route('client.downloads.show', ':id') }}',
+        'client.downloads.download': '{{ route('client.downloads.download', ':id') }}'
     };
 
     poll();

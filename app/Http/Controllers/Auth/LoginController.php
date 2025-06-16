@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User\UserType;
 
 class LoginController extends Controller
 {
@@ -22,7 +23,13 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/home');
+            $user = auth()->user();
+            if($user->Type === UserType::ID_ADMIN){
+                return redirect()->intended('admin/home');
+            }else{
+                return redirect()->intended('client/home');
+            }
+            
         }
 
         return back()->withErrors([
