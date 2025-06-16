@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Client;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -28,7 +28,7 @@ class DownloadController extends Controller
                             ->orderBy('id', 'desc')
                             ->get();
 
-        return view('client.downloads.index', compact('downloads'));
+        return view('admin.downloads.index', compact('downloads'));
     }
 
     public function do_create(Request $request): JsonResponse
@@ -71,7 +71,7 @@ class DownloadController extends Controller
         $download = Download::with(['Status', 'createdBy'])
                             ->findOrFail($id);
 
-        return view('client.downloads.show', compact('download'));
+        return view('admin.downloads.show', compact('download'));
     }
 
     public function download($id)

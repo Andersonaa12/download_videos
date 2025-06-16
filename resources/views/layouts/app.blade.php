@@ -14,10 +14,9 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <!-- jQuery via jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="sweetalert2.all.min.js"></script>
 
-    <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>

@@ -1,6 +1,6 @@
-<li class="nav-item">
+{{-- <li class="nav-item">
     <a class="nav-link" href="{{ route('admin.home.index') }}">{{ __('Inicio') }}</a>
-</li>
+</li> --}}
 <li class="nav-item">
     <a class="nav-link" href="{{ route('admin.users.index') }}">{{ __('Usuarios') }}</a>
 </li>

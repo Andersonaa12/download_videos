@@ -15,7 +15,7 @@ class ClientMiddleware
             if (Auth::user()->Type()->first()->id === UserType::ID_CLIENT) {
                 return $next($request);
             }
-            return redirect()->route('admin.home.index');
+            return redirect()->route('admin.downloads.index');
         }
         return redirect()->route('login');
     }

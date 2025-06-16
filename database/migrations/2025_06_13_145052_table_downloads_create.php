@@ -33,7 +33,7 @@ class TableDownloadsCreate extends Migration
             $table->smallInteger('status_id')->unsigned();
             $table->foreign('status_id')->references('id')->on('download_status')->onDelete('restrict');
 
-            $table->string('url');
+            $table->string('url', 1000);
             $table->string('file_path')->nullable();
             $table->string('file_name')->nullable();
             $table->text('error_message')->nullable();

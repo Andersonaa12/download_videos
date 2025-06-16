@@ -110,7 +110,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } catch (err) {
             console.error('Error:', err);
-            alert(err.message);
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: err.message,
+            });
         }
     });
 

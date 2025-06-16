@@ -25,9 +25,9 @@ class LoginController extends Controller
             $request->session()->regenerate();
             $user = auth()->user();
             if($user->Type === UserType::ID_ADMIN){
-                return redirect()->intended('admin/home');
+                return redirect()->intended('admin/downloads');
             }else{
-                return redirect()->intended('client/home');
+                return redirect()->intended('client/downloads');
             }
             
         }
